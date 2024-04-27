@@ -215,7 +215,8 @@ public class PlayerController : MonoBehaviour
         // Invoke(nameof(AttackRaycast), attackDelay);
 
         skillRuntimeData.OnSkillEnds.RemoveAllListeners();
-        skillRuntimeData.OnSkillEnds.AddListener(() =>
+        skillRuntimeData.OnSkillAnimationEnds.RemoveAllListeners();
+        skillRuntimeData.OnSkillAnimationEnds.AddListener(() =>
         {
             ResetAttack();
         });

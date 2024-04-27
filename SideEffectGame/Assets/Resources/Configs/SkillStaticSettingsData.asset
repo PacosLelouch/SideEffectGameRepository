@@ -17,7 +17,7 @@ MonoBehaviour:
   - basicConfig:
       skillId: 0
       name: Melee
-      description: "\u5E73A"
+      description: "\u5E73A(\u77AC\u53D1)"
       skillCd: 1.5
       costMp: 0
       costHp: 0
@@ -38,6 +38,56 @@ MonoBehaviour:
       - Hittable
       attackType: 0
       selectorType: 2
+      animationStartTime: 0
+      animationDurationTime: 0
+      skillPrefabName: 
+      animationNames:
+      - Attack 1
+      - Attack 2
+      releaseVFXName: 
+      releaseAFXName: Sword_Swing
+      releaseAFXVolume: 1
+      hitVFXName: Sword_Hit_VFX
+      hitVFXDuration: 20
+      hitAFXName: Sword_Hit
+      hitAFXVolume: 1
+      disappearType: 0
+      skillIndicator: 
+      skillIconName: 
+    postLoadSettings:
+      skillSourcePrefab: {fileID: 0}
+      releaseVFXPrefab: {fileID: 0}
+      releaseAFXClip: {fileID: 8300000, guid: 7923190c5e80b4d4d9396acc5d0b48cf, type: 3}
+      hitVFXPrefab: {fileID: 5334228485563152753, guid: 0134bdc80242c974b88f68d7bb298ed9,
+        type: 3}
+      hitAFXClip: {fileID: 8300000, guid: 11245d3945c564b45a1bafad5ecb70e5, type: 3}
+      skillIcon: {fileID: 0}
+  - basicConfig:
+      skillId: 1
+      name: ContactMelee
+      description: "\u5E73A(\u78B0\u649E)"
+      skillCd: 1
+      costMp: 0
+      costHp: 0
+      costDp: 1
+      level: 0
+      impactType: 0500000000000000
+      damageHp: 1
+      damageMp: 0
+      damageDp: 0
+      warmUpTime: 0.1
+      durationTime: 0.5
+      attackInterval: 0
+      nextComboId: -1
+      attackDistance: 3
+      attackAngle: 0
+      attackTargetTags: []
+      attackTargetLayers:
+      - Hittable
+      attackType: 0
+      selectorType: 1
+      animationStartTime: 0
+      animationDurationTime: 0
       skillPrefabName: 
       animationNames:
       - Attack 1

@@ -155,7 +155,7 @@ public struct SkillBasicConfig
     public float warmUpTime; // = 0;
 
     /// <summary>
-    /// 持续时间
+    /// 持续时间（前摇结束开始计算）
     /// </summary>
     [SerializeField]
     public float durationTime; // = 0;
@@ -203,6 +203,18 @@ public struct SkillBasicConfig
     /// </summary>
     [SerializeField]
     public SelectorType selectorType;
+
+    /// <summary>
+    /// 动画进入时间
+    /// </summary>
+    [SerializeField]
+    public float animationStartTime; // = 0;
+
+    /// <summary>
+    /// 动画持续时间
+    /// </summary>
+    [SerializeField]
+    public float animationDurationTime; // = 0;
 
     /// <summary>
     /// 技能预制体名称（空则不生成预制体）

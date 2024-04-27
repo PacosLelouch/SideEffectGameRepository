@@ -8,6 +8,7 @@ using UnityEngine.Events;
 public abstract class SkillEntityComponentBase : MonoBehaviour
 {
     private bool _isSkillEnds = true;
+    private bool _isSkillAnimationEnds = true;
     private SkillRuntimeData _skillData = null; 
     public SkillRuntimeData skillData //技能管理器提供
     {
@@ -105,7 +106,8 @@ public abstract class SkillEntityComponentBase : MonoBehaviour
     public void ReleaseSkill()
     {
         _isSkillEnds = false;
-        PlayReleaseAnimation();
+        float animationStartTime = skillData.basicConfig.animationStartTime;
+        Invoke(nameof(PlayReleaseAnimation), animationStartTime);
         PlayReleaseAFX();
         OnSkillReleased();
         float warmUpTime = skillData.basicConfig.warmUpTime;
@@ -116,6 +118,12 @@ public abstract class SkillEntityComponentBase : MonoBehaviour
         {
             float skillDuration = skillData.basicConfig.durationTime;
             Invoke(nameof(EndSkill), warmUpTime + skillDuration);
+        }
+        if (skillData.basicConfig.animationNames?.Length > 0)
+        {
+            float animationDurationTime = skillData.basicConfig.animationDurationTime;
+            float animationEndTime = Mathf.Min(animationStartTime + animationDurationTime, skillData.basicConfig.skillCd);
+            Invoke(nameof(EndSkillAnimation), animationEndTime);
         }
     }
 
@@ -138,6 +146,24 @@ public abstract class SkillEntityComponentBase : MonoBehaviour
         }
         OnSkillEnds();
         //OnSkillEnds?.Invoke();
+    }
+
+    /// <summary>
+    /// 结束技能动画
+    /// </summary>
+    public void EndSkillAnimation()
+    {
+        // 防止多次结束技能
+        if (_isSkillAnimationEnds)
+        {
+            return;
+        }
+        _isSkillAnimationEnds = true;
+        if (skillData != null)
+        {
+            skillData.OnSkillAnimationEnds?.Invoke();
+            skillData.OnSkillAnimationEnds?.RemoveAllListeners();
+        }
     }
 
     /// <summary>

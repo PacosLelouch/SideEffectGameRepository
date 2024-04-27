@@ -109,5 +109,6 @@ public class SkillRuntimeData
 
     public UnityEvent<SkillSelectResult> OnSkillHitsTarget = new UnityEvent<SkillSelectResult>();
     public UnityEvent OnSkillEnds = new UnityEvent();
+    public UnityEvent OnSkillAnimationEnds = new UnityEvent();
 }
 
