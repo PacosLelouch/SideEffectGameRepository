@@ -15,15 +15,18 @@ public interface ReceiveDamageInterface
 public class ReceiveDamageComponent: MonoBehaviour, ReceiveDamageInterface
 {
     public float spawnHealth = 1f;
+    public float spawnMana = 0f;
+    public float spawnDuration = 1f;
+
 #if !DATA_IN_MANAGER
     [SerializeField]
-    private HealthData _healthData = new HealthData();
+    public HealthData healthData = new HealthData();
 
-    public HealthData healthData
-    {
-        get { return _healthData; }
-        set { _healthData = value; }
-    }
+    //public HealthData healthData
+    //{
+    //    get { return healthData; }
+    //    set { healthData = value; }
+    //}
 
 #endif
 
@@ -56,7 +59,7 @@ public class ReceiveDamageComponent: MonoBehaviour, ReceiveDamageInterface
         healthData.health = spawnHealth;
         DamageManager.Singleton.RegisterHealthData(gameObject, healthData);
 #else
-        _healthData.health = spawnHealth;
+        healthData.health = spawnHealth;
 #endif
     }
 

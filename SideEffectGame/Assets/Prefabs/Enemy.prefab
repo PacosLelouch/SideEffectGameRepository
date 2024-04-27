@@ -122,8 +122,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnHealth: 3
+  spawnMana: 0
+  spawnDuration: 0
   _healthData:
     health: 0
+    mana: 0
+    duration: 0
   postReceiveDamageEvent:
     m_PersistentCalls:
       m_Calls: []

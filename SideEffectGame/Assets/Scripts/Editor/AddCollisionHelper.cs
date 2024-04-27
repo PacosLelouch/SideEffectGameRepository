@@ -7,27 +7,70 @@
 //    // Start is called before the first frame update
 //    void Start()
 //    {
-        
+
 //    }
 
 //    // Update is called once per frame
 //    void Update()
 //    {
-        
+
 //    }
 //}
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.PackageManager.UI;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.InputSystem.Controls;
 
+public class DestroyPrompt : EditorWindow
+{
+    public static void ShowPrompt(Action inAction, string title = "清理Collider确认", string inPromptTips = "确定吗？")
+    {
+        DestroyPrompt destroyPrompt = EditorWindow.GetWindow<DestroyPrompt>(title);
+        //设置窗口在屏幕中的位置
+        destroyPrompt.position = new Rect(Screen.width / 2, Screen.height / 2, 500, 500);
+        destroyPrompt.action = inAction;
+        destroyPrompt.promptTips = inPromptTips;
+        //显示窗口
+        destroyPrompt.Show();
+    }
+
+    Action action;
+    string promptTips;
+    private void OnGUI()
+    {
+        //一个输入框
+        EditorGUILayout.LabelField(promptTips ?? "确定吗？");
+        if (GUILayout.Button("确定") && action != null)
+        {
+            action();
+            //关闭窗口
+            Close();
+        }
+        if (GUILayout.Button("取消"))
+        {
+            //关闭窗口
+            Close();
+        }
+
+    }
+}
+
 public class AddCollisionBox
 {
-    [MenuItem("Tools/添加碰撞体/一键添加所有碰撞盒")]
+    [MenuItem("GameObject/Custom Tools/添加碰撞体/一键添加所有碰撞盒", isValidateFunction: true)]
+    private static bool Anchor_AddCollisionBoxForMeshes_Validate()
+    {
+        return Selection.activeObject is GameObject;
+    }
+
+    [MenuItem("GameObject/Custom Tools/添加碰撞体/一键添加所有碰撞盒")]
     private static void Anchor_AddCollisionBoxForMeshes()
     {
         if (Selection.activeObject)
@@ -55,22 +98,35 @@ public class AddCollisionBox
     }
 }
 
-public class DestoryColliders : EditorWindow
+public class DestoryColliders
 {
-    [MenuItem("Tools/删除碰撞体/一键清理所有Collider")]
+    [MenuItem("GameObject/Custom Tools/删除碰撞体/一键清理所有Collider", isValidateFunction: true)]
+    [MenuItem("GameObject/Custom Tools/删除碰撞体/一键清理骨骼的所有Collider", isValidateFunction: true)]
+    private static bool Anchor_ClearTreeCollider_Validate()
+    {
+        return Selection.activeObject is GameObject;
+    }
+
+    [MenuItem("GameObject/Custom Tools/删除碰撞体/一键清理所有Collider")]
     public static void Anchor_ClearTreeCollider()
     {
         if (Selection.activeObject)
         {
-            ClearMeshColliderByChild((GameObject)Selection.activeObject, false);
+            DestroyPrompt.ShowPrompt(() =>
+            {
+                ClearMeshColliderByChild((GameObject)Selection.activeObject, false);
+            });
         }
     }
-    [MenuItem("Tools/删除碰撞体/一键清理骨骼的所有Collider")]
+    [MenuItem("GameObject/Custom Tools/删除碰撞体/一键清理骨骼的所有Collider")]
     public static void Anchor_ClearTreeSkeletonCollider()
     {
         if (Selection.activeObject)
         {
-            ClearMeshColliderByChild((GameObject)Selection.activeObject, true);
+            DestroyPrompt.ShowPrompt(() =>
+            {
+                ClearMeshColliderByChild((GameObject)Selection.activeObject, true);
+            });
         }
     }
     public static void ClearMeshColliderByChild(GameObject obj, bool destroyObject = false)
@@ -84,13 +140,13 @@ public class DestoryColliders : EditorWindow
                 //MeshCollider meshCollider = child.GetComponent<MeshCollider>();
                 //if (meshCollider != null)
                 //{
-                //    DestroyImmediate(meshCollider);
+                //    UnityEngine.Object.DestroyImmediate(meshCollider);
                 //}
                 //BoxCollider boxCollider = child.GetComponent<BoxCollider>();
                 //if (boxCollider != null)
                 //{
                 //    Debug.Log(boxCollider.name);
-                //    DestroyImmediate(boxCollider);
+                //    UnityEngine.Object.DestroyImmediate(boxCollider);
                 //}
                 ClearMeshColliderByChild(child, destroyObject);
                 Collider[] colliders = child.GetComponents<Collider>();
@@ -99,7 +155,7 @@ public class DestoryColliders : EditorWindow
                     foreach (Collider collider in colliders)
                     {
                         Debug.Log($"Clear {collider.name}");
-                        DestroyImmediate(collider);
+                        UnityEngine.Object.DestroyImmediate(collider);
                     }
                 }
                 else if (colliders.Length > 0)
@@ -111,20 +167,58 @@ public class DestoryColliders : EditorWindow
             foreach (GameObject child in colliderObjectsToDestroy)
             {
                 Debug.Log($"Clear {child.gameObject.name}");
-                DestroyImmediate(child.gameObject);
+                UnityEngine.Object.DestroyImmediate(child.gameObject);
             }
         }
     }
 }
 
+public class AddCollisionCapsuleWindow : EditorWindow
+{
+    public string radiusString = "20";
+
+    private void OnGUI()
+    {
+        //一个输入框
+        radiusString = EditorGUILayout.TextField("半径", radiusString);
+        if (GUILayout.Button("确定"))
+        {
+            if (float.TryParse(radiusString, out float radius))
+            {
+                AddCollisionCapsule.AddColliderForSkeleton((GameObject)Selection.activeObject, radius);
+            }
+            //关闭窗口
+            Close();
+        }
+        if (GUILayout.Button("取消"))
+        {
+            //关闭窗口
+            Close();
+        }
+
+    }
+}
+
 public class AddCollisionCapsule
 {
-    [MenuItem("Tools/添加碰撞体/一键给骨骼添加胶囊体，半径为20")]
+
+    [MenuItem("GameObject/Custom Tools/添加碰撞体/一键给骨骼添加胶囊体", isValidateFunction:true)]
+    private static bool Anchor_AddCollisionCapsuleForSkeleton_Validate()
+    {
+        return Selection.activeObject is GameObject;
+    }
+
+    [MenuItem("GameObject/Custom Tools/添加碰撞体/一键给骨骼添加胶囊体")]
     private static void Anchor_AddCollisionCapsuleForSkeleton()
     {
         if (Selection.activeObject)
         {
-            AddColliderForSkeleton((GameObject)Selection.activeObject, 20f);
+            AddCollisionCapsuleWindow window = EditorWindow.GetWindow<AddCollisionCapsuleWindow>("碰撞体设置");
+            //设置窗口在屏幕中的位置
+            window.position = new Rect(Screen.width / 2, Screen.height / 2, 500, 500);
+            //显示窗口
+            window.Show();
+            // AddColliderForSkeleton((GameObject)Selection.activeObject, 20f);
         }
     }
 

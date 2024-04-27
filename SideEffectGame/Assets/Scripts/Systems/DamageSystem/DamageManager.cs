@@ -9,7 +9,14 @@ using UnityEngine;
 [Serializable]
 public struct HealthData
 {
+    [Tooltip("Hp")]
     public float health;
+
+    [Tooltip("Mp")]
+    public float mana;
+
+    [Tooltip("Dp")]
+    public float duration;
 }
 
 public class DamageManager : SceneSystemManagerBase
@@ -63,8 +70,8 @@ public class DamageManager : SceneSystemManagerBase
         if (receiveDamageComponent != null)
         {
             // 处理共通的受伤逻辑：扣血，调用PostReceiveDamage
-            HealthData targetHealthData;
 #if DATA_IN_MANAGER
+            HealthData targetHealthData;
             if (_healthData.TryGetValue(targetObject.GetInstanceID(), out targetHealthData))
             {
                 targetHealthData.health = Mathf.Max(targetHealthData.health - Value, 0f);
@@ -79,15 +86,15 @@ public class DamageManager : SceneSystemManagerBase
                 }
             }
 #else
-            targetHealthData = receiveDamageComponent.healthData;
-            targetHealthData.health = Mathf.Max(targetHealthData.health - Value, 0f);
-            if (targetHealthData.health <= 0f)
+            float targetHealth = receiveDamageComponent.healthData.health;
+            targetHealth = Mathf.Max(targetHealth - Value, 0f);
+            if (targetHealth <= 0f)
             {
                 NotifyNoHealth(targetObject);
             }
             else
             {
-                receiveDamageComponent.healthData = targetHealthData;
+                receiveDamageComponent.healthData.health = targetHealth;
                 receiveDamageComponent.PostReceiveDamage(damageSource, Value);
             }
 #endif

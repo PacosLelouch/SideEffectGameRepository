@@ -163,6 +163,7 @@ GameObject:
   - component: {fileID: 2484499563464876031}
   - component: {fileID: -2060695337241134076}
   - component: {fileID: 1601447684007270872}
+  - component: {fileID: 7047764879471646916}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -352,6 +353,28 @@ MonoBehaviour:
     - {fileID: 233316297873637888}
     releaseSkillAudioSourceObject: {fileID: 0}
   _skillRuntimeDatasDebug: []
+--- !u!114 &7047764879471646916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1788623314744564116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6c6f5fdd4ee293468e8b54627b1b469, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnHealth: 10
+  spawnMana: 10
+  spawnDuration: 10
+  _healthData:
+    health: 0
+    mana: 0
+    duration: 0
+  postReceiveDamageEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1788623315372294390
 GameObject:
   m_ObjectHideFlags: 0
